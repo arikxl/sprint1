@@ -1,0 +1,133 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+body {
+    margin: 0;
+    background-size: cover;
+    background-image: url(../img/1.png);
+}
+
+.top-features,
+.bottom-features {
+    width: 100%;
+    margin: auto;
+    margin-bottom: 10px;
+    padding: auto;
+    text-align: center;
+}
+
+.timer,
+.lives,
+.hints,
+.safe-click,
+.manual-mines,
+.undo,
+.best-score {
+    display: inline-block;
+    background: linear-gradient(to bottom, tomato, gold);
+    color: white;
+    font-size: 30px;
+    text-align: center;
+    margin: auto;
+    width: 200px;
+    border: 5px white;
+    border-style: double;
+    border-radius: 10px;
+}
+
+.bottom-features {
+    margin: 0;
+    font-size: 30px;
+    padding: auto;
+    bottom: 0;
+    position: absolute;
+}
+
+
+.best-score,
+.manual-mines,
+.safe-click {
+    font-size: 35px;
+    padding: auto;
+}
+
+.hints,
+.safe-click,
+.manual-mines,
+.undo {
+    cursor: pointer;
+}
+
+.hints:hover,
+.safe-click:hover,
+.manual-mines:hover,
+.undo:hover {
+    background: linear-gradient(to bottom, tomato, lemonchiffon);
+    color: white;
+}
+
+.buttons {
+    margin-bottom: 20px;
+    width: auto;
+    text-align: center;
+}
+
+button {
+    font-size: 20px;
+    color: white;
+    background: linear-gradient(to bottom, lightpink, gold);
+    box-shadow: 2px 2px 2px lightpink;
+    outline: none;
+    cursor: pointer;
+    width: 90px;
+    height: 35px;
+    border-radius: 5px;
+    border-color:white;
+}
+
+button:hover {
+    background: linear-gradient(to bottom, tomato, lemonchiffon);
+}
+
+table {
+    table-layout: fixed;
+    box-shadow: 5px 5px 5px lightpink;
+    width: auto;
+    text-align: center;
+    margin: auto;
+    border-radius: 5px;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+
+td {
+    width: 30px;
+    height: 30px;
+    background-color: gold;
+    margin: auto;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+td:hover {
+    background-color: lightpink;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
