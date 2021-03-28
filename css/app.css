@@ -21,6 +21,7 @@ body {
 }
 
 .timer,
+.mines-left,
 .lives,
 .hints,
 .safe-click,
@@ -130,4 +131,8 @@ td:hover {
     100% {
         background-position: 0% 50%;
     }
+}
+
+.boom {
+    background-color: blue;
 }

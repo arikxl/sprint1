@@ -1,7 +1,7 @@
 'use strict'
 
 function getEmptyCells(board) {
-    var emptyCells = []
+    var emptyCells = [];
     for (var i = 0; i < board.length; i++) {
         for (var j = 0; j < board[i].length; j++) {
             var cell = board[i][j]
@@ -38,10 +38,18 @@ function getRndInteger(min, max) {
 function startTimer() {
     gameInterval = setInterval(function () {
         gGame.secsPassed++
-        document.querySelector('.timer').innerText = gGame.secsPassed;
+        document.querySelector('.timer span').innerText = gGame.secsPassed;
     }, 1000);
 }
 
 function underMaintenance(){
     alert('ממש בקרוב אפשרות זו תהיה פעילה')
+}
+
+function saveBestTime() {
+    if (gGame.secsPassed < gGame.bestScore) {
+        gGame.bestScore = gGame.secsPassed;
+        localStorage.setItem('Best score', gGame.bestScore);
+        document.querySelector(".best-score span").innerText = gGame.bestScore;
+    }
 }
