@@ -5,6 +5,8 @@ const FLAG = '🚩';
 const EMPTY = ' ';
 
 var gMinesOnBoard = [];
+// var elMinesLeft = document.querySelector('.mines-left span');
+var elMinesLeft = document.querySelector('.mines-left');
 var elLives = document.querySelector('.lives span');
 var elBackground = document.querySelector('body');
 var gameInterval = 0;
@@ -24,7 +26,7 @@ var gGame = {
 
 var gLevel = {
     SIZE: 4,
-    MINES: 2
+    MINES: 3
 };
 
 function initGame(size, mines) {
@@ -42,7 +44,9 @@ function initGame(size, mines) {
     gBoard = buildBoard(size);
     document.querySelector('.timer span').innerText = gGame.secsPassed;
     document.querySelector('.field').innerHTML = renderBoard(gBoard);
-
+    elMinesLeft.innerText = gLevel.MINES;
+    // document.querySelector('.mines-left').innerText = ' נותרו '+gLevel.MINES+' מוקשים ';
+    elMinesLeft.innerText = ` נותרו ${gLevel.MINES} מוקשים `;
 
 }
 
@@ -57,7 +61,6 @@ function buildBoard(size) {
                 isShown: false,
                 isMine: false,
                 isMarked: false,
-                isChecked: false,
                 i: i,
                 j: j
             }
@@ -77,7 +80,6 @@ function renderBoard(board) {
             onClick= 'cellClicked(this,${currCell.i},${currCell.j})' class = 'cell-${i}-${j}'></td>\n`;
         }
         cellHTML += '<tr>\n';
-        // console.log('cellHTML:', cellHTML)
     }
     getEmptyCells(board)
     return cellHTML;
@@ -94,12 +96,11 @@ function addMine(mines) {
 }
 
 function cellClicked(elCell) {
-    var location = elCell.classList.value.split('-');
-    var iIndex = +location[1];
-    var jIndex = +location[2];
-    var minesTest = gBoard[iIndex][jIndex];
-    if (minesTest.isChecked) return
-    if (minesTest.isShown) return
+    var coords = elCell.classList.value.split('-');
+    var iIndex = +coords[1];
+    var jIndex = +coords[2];
+    var clickedCell = gBoard[iIndex][jIndex];
+    if (clickedCell.isShown) return
     if (!gGame.isOn) return
     if (gGame.isNew) {
         addMine(gLevel.MINES);
@@ -108,45 +109,28 @@ function cellClicked(elCell) {
         gGame.isNew = false;
     }
 
-    if (minesTest.isMine && !minesTest.isShown) {
+    if (clickedCell.isMine && !clickedCell.isShown) {
         elCell.innerText = MINE;
         clickedOnMine()
-    } else if (!minesTest.isShown) {
-        minesTest.minesAroundCount = countNeighbors(gBoard, iIndex, jIndex);
-        elCell.innerText = countNeighbors(gBoard, iIndex, jIndex);
-        if (!minesTest.minesAroundCount && !minesTest.isMine) {
+    } else if (!clickedCell.isShown) {
+        clickedCell.minesAroundCount = countNeighbors(gBoard, iIndex, jIndex);
+        elCell.innerText = clickedCell.minesAroundCount;
+        if (clickedCell.minesAroundCount===0 && !clickedCell.isMine) {
             revealNeighbors(iIndex, jIndex);
         }
     }
-    minesTest.isShown = true;
+    clickedCell.isShown = true;
     gGame.shownCount++
+    // console.log(' gGame.shownCount:',  gGame.shownCount)
     checkGameOver()
-    // console.log('gGame.isNew:', gGame.isNew)
 
 }
-
-// function revealNeighbors(iIndex, jIndex) {
-//     if (gBoard[iIndex][jIndex].isMine) return
-//     for (var i = iIndex - 1; i <= iIndex + 1; i++) {
-//         if (i < 0 || i >= gBoard.length) continue;
-//         for (var j = jIndex - 1; j <= jIndex + 1; j++) {
-//             if (i === iIndex && j === jIndex) continue;
-//             if (j < 0 || j >= gBoard.length) continue;
-//             var neighborCell = gBoard[i][j];
-//             if (!neighborCell.isMine && !neighborCell.isShown && !neighborCell.isMarked) {
-//                 neighborCell.isShown = true;
-//                 gGame.shownCount++;
-//                 if (neighborCell.minesAroundCount > 1) revealNeighbors(i, j);
-//             }
-//         }
-//     }
-// }
 
 function revealNeighbors(iIndex, jIndex) {
     for (var i = iIndex - 1; i <= iIndex + 1; i++) {
         if (i < 0 || i >= gBoard.length) continue;
         for (var j = jIndex - 1; j <= jIndex + 1; j++) {
-            if (i === jIndex && j === jIndex) continue;
+            if (i === iIndex && j === jIndex) continue;
             if (j < 0 || j >= gBoard[i].length) continue;
             var elCell = document.querySelector(`.cell-${i}-${j}`);
             cellClicked(elCell);
@@ -162,11 +146,16 @@ function cellMarked(elCell, i, j) {
     if (!gGame.isOn) return;
     if (gBoard[i][j].isMarked === true) {
         gGame.markedCount--;
+        gLevel.MINES ++;
+        elMinesLeft.innerText = ` נותרו ${gLevel.MINES} מוקשים `;
+        console.log(gLevel.MINES);
         gBoard[i][j].isMarked = false;
         elCell.innerText = ' ';
     } else {
         gBoard[i][j].isMarked = true
         gGame.markedCount++
+        gLevel.MINES --;
+        elMinesLeft.innerText = ` נותרו ${gLevel.MINES} מוקשים `;
         elCell.innerText = FLAG;
         checkGameOver()
     }
@@ -195,9 +184,12 @@ function checkGameOver() {
 
 function clickedOnMine() {
     gGame.lives--
+    gLevel.MINES --;
+    elMinesLeft.innerText = ` נותרו ${gLevel.MINES} מוקשים `;
     if (gGame.lives === 2) elLives.innerText = '❤❤';
     if (gGame.lives === 1) elLives.innerText = '❤';
     if (gGame.lives === 0) {
+        elMinesLeft.innerText = '!המשחק נגמר';
         revealBombs()
         saveBestTime()
         clearInterval(gameInterval);
